@@ -33,12 +33,13 @@ docker tag flipperdevices/matter-tests:latest matter-tests:latest
 
 ## Run Tests
 
+Put all persistent data under a `data` directory in the current working directory, like PAA trust stores (`./data/paa-store/`).
+
 ```sh
 docker run --rm -it \
   --network=host \
+  --volume "$PWD/data:/data" \
   --volume "$PWD/logs:/tmp/matter_testing/logs" \
-  --volume "$PWD/paa-store:/paa-store" \
-  --volume "$PWD/storage:/storage" \
   flipperdevices/matter-tests:latest
 ```
 
@@ -50,9 +51,11 @@ python3 src/python_testing/TC_SC_4_3.py \
   --commissioning-method on-network \
   --discriminator 1300 \
   --passcode 2594278 \
-  --paa-trust-store-path /paa-store \
-  --storage-path /storage/admin_storage.json
+  --paa-trust-store-path /data/paa-store \
+  --storage-path /data/admin_storage.json
 ```
+
+The container entrypoint automatically activates `/python_env`, so `python3` and `pip` already point at the bundled virtual environment.
 
 ## Notes
 

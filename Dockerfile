@@ -42,12 +42,10 @@ RUN source ./scripts/activate.sh && \
 
 RUN rm -rf .git \
 	&& rm -rf \
-		.environment/gn_out \
-		.environment/download_cache \
-		.environment/cipd_cache \
-		.environment/pigweed-venv \
+		.environment \
 		out \
 		tmp \
+        third_party \
 	&& find . -type d -name '__pycache__' -prune -exec rm -rf '{}' + \
 	&& find . -type f -name '*.pyc' -delete \
 	&& rm -rf /root/.cache/pip /root/.cache/ninja
@@ -85,5 +83,10 @@ COPY --from=builder ${CHIP_ROOT} ${CHIP_ROOT}
 COPY --from=builder /python_env /python_env
 
 WORKDIR ${CHIP_ROOT}
+
+RUN printf '#!/bin/bash\nsource /python_env/bin/activate\nexec "$@"\n' > /usr/local/bin/matter-entrypoint && \
+	chmod +x /usr/local/bin/matter-entrypoint
+
+ENTRYPOINT ["/usr/local/bin/matter-entrypoint"]
 
 CMD ["/bin/bash"]
