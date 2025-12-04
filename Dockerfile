@@ -40,7 +40,17 @@ RUN source ./scripts/bootstrap.sh && \
 RUN source ./scripts/activate.sh && \
 	./scripts/build_python.sh -i /python_env
 
-RUN rm -rf .git
+RUN rm -rf .git \
+	&& rm -rf \
+		.environment/gn_out \
+		.environment/download_cache \
+		.environment/cipd_cache \
+		.environment/pigweed-venv \
+		out \
+		tmp \
+	&& find . -type d -name '__pycache__' -prune -exec rm -rf '{}' + \
+	&& find . -type f -name '*.pyc' -delete \
+	&& rm -rf /root/.cache/pip /root/.cache/ninja
 
 FROM ubuntu:24.04 AS runtime
 
