@@ -10,6 +10,13 @@ docker build -t matter-tests:latest --build-arg CHIP_VERSION=v1.4.2.0 .
 
 Adjust `CHIP_VERSION` if you need a different release tag or branch.
 
+To target multiple CPU architectures locally, use Buildx:
+
+```sh
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 \
+  -t matter-tests:latest --build-arg CHIP_VERSION=v1.4.2.0 .
+```
+
 ## Pull from GHCR
 
 If the CI workflow has already published an image, pull it directly from GitHub Container Registry:
@@ -54,3 +61,5 @@ python3 src/python_testing/TC_SC_4_3.py \
 - Builder dependencies are pruned from the final runtime layer so the image stays small but still contains the CHIP source tree and compiled Python dependencies. Only the shared libraries and lightweight diagnostics needed for running tests remain; install extra packages in a derived image if you need additional tooling.
 - The runtime stage sets `PIP_BREAK_SYSTEM_PACKAGES=1` which matches the expectations of CHIP's bootstrap scripts and allows ad-hoc pip installs when debugging tests.
 - Mount `paa-store` and `storage` as volumes (as shown above) so credentials and test artifacts persist outside the container.
+- CI publishes a multi-architecture manifest (`linux/amd64`, `linux/arm64`, `linux/arm/v7`) under `ghcr.io/flipperdevices/matter-tests`, so the same tag runs on desktops, Apple Silicon, and ARM SBCs without rebuilding.
+- QEMU emulation is enabled in CI for the ARM builds so that cross-architecture Docker layers can be produced on GitHub's x86 runners.
