@@ -22,8 +22,8 @@ jobs:
             suffix: amd64
           - platform: linux/arm64
             suffix: arm64
-          - platform: linux/arm/v7
-            suffix: armv7
+          # - platform: linux/arm/v7
+          #   suffix: armv7
     permissions:
       contents: read
       packages: write
@@ -98,5 +98,5 @@ jobs:
           docker buildx imagetools create \
             ${TAG_ARGS} \
             ${IMAGE_NAME}:amd64 \
-            ${IMAGE_NAME}:arm64 \
-            ${IMAGE_NAME}:armv7
+            ${IMAGE_NAME}:arm64
+            # ${IMAGE_NAME}:armv7
