@@ -9,7 +9,7 @@ on:
 
 env:
   CHIP_VERSION: v1.4.2.0
-  IMAGE_NAME: ghcr.io/flipperdevices/matter-tests
+  IMAGE_NAME: flipperdevices/matter-tests
 
 jobs:
   build:
@@ -44,9 +44,8 @@ jobs:
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ secrets.DOCKER_REGISTRY_LOGIN }}
+          password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
 
       - name: Extract Docker metadata
         id: meta
@@ -83,9 +82,8 @@ jobs:
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ secrets.DOCKER_REGISTRY_LOGIN }}
+          password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
 
       - name: Create multi-arch manifest
         env:
